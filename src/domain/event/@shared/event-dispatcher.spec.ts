@@ -1,5 +1,6 @@
 import Address from "../../entity/address";
 import Customer from "../../entity/customer";
+import AddressChangedEvent from "../customer/address-changed.event";
 import CustomerCreatedEvent from "../customer/customer-created.event";
 import LogInformationWhenCustomerAddressChangedHandler from "../customer/handlers/log-information-when-customer-address-changed.handler";
 import LogInformationWhenCustomerIsCreatedHandler from "../customer/handlers/log-information-when-customer-is-created.handler";
@@ -102,14 +103,16 @@ describe("Domain events tests", () => {
         const addressChangedHandler = new LogInformationWhenCustomerAddressChangedHandler();
 
         eventDispatcher.register("CustomerCreatedEvent", eventHandler);
-        eventDispatcher.register("CustomerCreatedEvent", addressChangedHandler);
+        eventDispatcher.register("AddressChangedEvent", addressChangedHandler);
 
         const spyEventHandler = jest.spyOn(eventHandler, "handle");
         const spyEventAddressHandler = jest.spyOn(addressChangedHandler, "handle");
 
-        expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"].length).toBe(2);
+        expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"].length).toBe(1);
         expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"][0]).toMatchObject(eventHandler);
-        expect(eventDispatcher.getEventHandlers["CustomerCreatedEvent"][1]).toMatchObject(addressChangedHandler);
+
+        expect(eventDispatcher.getEventHandlers["AddressChangedEvent"].length).toBe(1);
+        expect(eventDispatcher.getEventHandlers["AddressChangedEvent"][0]).toMatchObject(addressChangedHandler);
 
         const customer = new Customer("1", "João", () => {
 
@@ -121,8 +124,8 @@ describe("Domain events tests", () => {
         });
 
         customer.onAddressChanged = (address: Address) => {
-            const customerCreatedEvent = new CustomerCreatedEvent({
-                message: `Esse é o segundo console.log do evento: CustomerCreated`,
+            const customerCreatedEvent = new AddressChangedEvent({
+                message: `Esse é o segundo console.log do evento: AddressChangedEvent`,
                 address: `Endereço do cliente: ${customer.id}, ${customer.name} alterado para: ${address.toString()}`
             });
 
