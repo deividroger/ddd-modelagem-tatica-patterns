@@ -31,7 +31,7 @@ describe("Customer Unit tests",()=>{
         const customer = new Customer('1','Customer 1');
         const address = new Address('Rua',10,'0000-000','São Paulo');
 
-        customer.Address = address;
+        customer.changeAddress(address);
 
         customer.activate()
 

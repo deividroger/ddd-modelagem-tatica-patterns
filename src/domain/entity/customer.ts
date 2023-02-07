@@ -64,8 +64,12 @@ export default class Customer {
         return this._name;
     }
 
-    set Address(address: Address) {
+     changeAddress(address: Address) {
         this._address = address;
+    }
+
+    get Address(): Address {
+        return this._address;
     }
 
 }
