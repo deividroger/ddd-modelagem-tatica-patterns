@@ -1,3 +1,4 @@
+import { Fn } from "sequelize/types/utils";
 import Address from "./address";
 
 export default class Customer {
@@ -6,13 +7,18 @@ export default class Customer {
    private _address!: Address;
    private _active: boolean = false;
    private _rewardPoints: number = 0;
+
+   public onAddressChanged?: (address: Address) => void;
+
     
-    constructor(id: string,name: string) {
+    constructor(id: string,name: string,onCreated?:Function) {
         this._id = id;
         this._name = name;
         
-
         this.validate();
+        
+        onCreated && onCreated();
+
     }
 
     changeName(name: string) {
@@ -66,6 +72,9 @@ export default class Customer {
 
      changeAddress(address: Address) {
         this._address = address;
+
+        this.onAddressChanged && this.onAddressChanged(address);
+
     }
 
     get Address(): Address {
